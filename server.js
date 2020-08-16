@@ -1,12 +1,51 @@
-var app = require('express')(),
-    server = require('http').createServer(app),
-    io = require('socket.io').listen(server),
-    ent = require('ent') // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io').listen(server);
+const ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
+const bodyParser = require('body-parser');
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-// Chargement de la page index.html
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+
+app.use(express.urlencoded({
+    extended: true
+  }));
+
+
+//chargement de la page signup.html
+app.get('/', (req, res) => {
+ res.sendFile(__dirname + '/views/signup.html')
 });
+app.post('/submit-signup', (req, res) => {
+    let email = req.body.email;
+    let password = req.body.password;
+    let confirm_password = req.body.confirm_password;
+
+    if(email && password && confirm_password && password === confirm_password){
+        res.sendFile(__dirname + '/views/signin.html')
+    } else {
+        res.sendFile(__dirname + '/views/signup.html')
+    }
+});
+
+//chargement de la page login
+app.get('/login', (req, res) => {
+    res.sendFile(__dirname + '/views/signin.html')
+});
+app.post('/submit-login', (req, res) => {
+    let email =  req.body.email;
+    let password = req.body.password;
+
+    if(email && password) {
+
+    } else {
+        
+    }
+});
+// Chargement de la page index.html
+app.get('/messenger', () => {
+    res.sendFile(__dirname + '/views/index.html');
+  });
 
 io.sockets.on('connection', function (socket, pseudo) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
