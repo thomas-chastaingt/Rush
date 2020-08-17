@@ -1,52 +1,33 @@
+//module exports
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
-const ent = require('ent'); // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
-const bodyParser = require('body-parser');
-const urlencodedParser = bodyParser.urlencoded({ extended: false });
+const ent = require('ent');
+var session = require('express-session')
+const messenger = require('./routes/messenger');
+const user =  require('./routes/user');
 
+// settings
+app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({
     extended: true
   }));
 
 
-//chargement de la page signup.html
+//routes
 app.get('/', (req, res) => {
- res.sendFile(__dirname + '/views/signup.html')
-});
-app.post('/submit-signup', (req, res) => {
-    let email = req.body.email;
-    let password = req.body.password;
-    let confirm_password = req.body.confirm_password;
-
-    if(email && password && confirm_password && password === confirm_password){
-        res.sendFile(__dirname + '/views/signin.html')
-    } else {
-        res.sendFile(__dirname + '/views/signup.html')
-    }
+    res.render('index');
 });
 
-//chargement de la page login
-app.get('/login', (req, res) => {
-    res.sendFile(__dirname + '/views/signin.html')
-});
-app.post('/submit-login', (req, res) => {
-    let email =  req.body.email;
-    let password = req.body.password;
+app.use('/messenger', messenger);
 
-    if(email && password) {
+app.use('/user', user);
 
-    } else {
-        
-    }
-});
-// Chargement de la page index.html
-app.get('/messenger', () => {
-    res.sendFile(__dirname + '/views/index.html');
-  });
 
+
+//message server
 io.sockets.on('connection', function (socket, pseudo) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
     socket.on('nouveau_client', function(pseudo) {
@@ -62,6 +43,8 @@ io.sockets.on('connection', function (socket, pseudo) {
     }); 
 });
 
+
+//server param
 server.listen(8080, ()=>{
     console.log("Server is listening on port 8080")
 });
