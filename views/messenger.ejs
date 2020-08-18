@@ -11,7 +11,7 @@
             <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
             <input type="submit" id="envoi_message" value="Envoyer" />
         </form>
-
+        <input type="text" id="getID" style="display: none" value="<%=pseudo%>">
         <section id="zone_chat">
             
         </section>
@@ -24,9 +24,7 @@
             // Connexion à socket.io
             var socket = io.connect('http://localhost:8080');
 
-            // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
-            var pseudo = prompt('Quel est votre pseudo ?');
-            socket.emit('nouveau_client', pseudo);
+            var pseudo =  document.getElementById('getID').value;
             document.title = pseudo + ' - ' + document.title;
 
             // Quand on reçoit un message, on l'insère dans la page

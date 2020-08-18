@@ -8,6 +8,11 @@ router.use(express.urlencoded({
     extended: true
   }));
 
+router.use(session({
+    secret: 'secret-key',
+    resave: false,
+    saveUninitialized: false
+ }));
 
 //Routes
 router.use('/signin', (req, res) => {
@@ -15,12 +20,11 @@ router.use('/signin', (req, res) => {
 });
 
 router.post('/submit_signin', (req, res) => {
-    let email =  req.body.email;
-    let password = req.body.password;
+    const email =  req.body.email;
+    const password = req.body.password;
 
     if(email && password) {
-        router.use(session({email: req.body.session }))
-        console.log(req.session.email);
+        req.session.email = email;
         res.render('messenger');
     } else {
         console.log("Nop");

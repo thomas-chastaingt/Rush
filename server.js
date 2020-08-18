@@ -4,7 +4,7 @@ const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
 const ent = require('ent');
-var session = require('express-session')
+var session = require('express-session');
 const messenger = require('./routes/messenger');
 const user =  require('./routes/user');
 
@@ -15,6 +15,11 @@ app.use(express.urlencoded({
     extended: true
   }));
 
+app.use(session({
+    secret: 'secret-key',
+    resave: false,
+    saveUninitialized: false
+ }));
 
 //routes
 app.get('/', (req, res) => {
@@ -30,9 +35,9 @@ app.use('/user', user);
 //message server
 io.sockets.on('connection', function (socket, pseudo) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
-    socket.on('nouveau_client', function(pseudo) {
+    socket.on('nouveau_client', function() {
         pseudo = ent.encode(pseudo);
-        socket.pseudo = pseudo;
+        socket.pseudo = req.session.email;
         socket.broadcast.emit('nouveau_client', pseudo);
     });
 
