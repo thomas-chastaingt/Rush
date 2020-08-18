@@ -1,0 +1,17 @@
+html {
+    margin: 0;
+    padding: 0;
+}
+.home {
+    display: flex;
+}
+.leftHome {
+    display: flex;
+    padding: 100px;
+    width: 50%;
+    height: 100vh;
+}
+.leftHome > img {
+    width: 400px;
+    
+}
